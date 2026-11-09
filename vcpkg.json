@@ -1,0 +1,9 @@
+{
+    "name": "tetris",
+    "version": "1.0.0",
+    "description": "Tetris game in C++ with SFML",
+    "dependencies": [
+        "sfml"
+    ],
+    "builtin-baseline": "2024-01-15"
+}

@@ -1,0 +1,19 @@
+{
+    "cmake.buildDirectory": "${workspaceFolder}/build",
+    "cmake.configureOnOpen": true,
+    "cmake.generator": "MinGW Makefiles",
+    "cmake.buildBeforeRun": true,
+    "cmake.sourceDirectory": "${workspaceFolder}",
+    "terminal.integrated.defaultProfile.windows": "Command Prompt",
+    "files.associations": {
+        "*.h": "cpp",
+        "*.hpp": "cpp"
+    },
+    "editor.formatOnSave": true,
+    "editor.formatOnType": true,
+    "C_Cpp.errorSquiggles": "enabled",
+    "C_Cpp.intelliSenseEngine": "default",
+    "cmake.configureSettings": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+    }
+}
