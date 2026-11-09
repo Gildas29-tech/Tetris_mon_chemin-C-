@@ -54,12 +54,56 @@ bool Tetromino::verifierPosition(const std::array<std::array<sf::Color, LARGEUR_
     return true;
 }
 
+static const std::array<std::pair<int, int>, 5> KICKS_JLSTZ[8] = {{
+    {{{0, 0}, {-1, 0}, {-1, 1}, {0, -2}, {-1, -2}}},
+    {{{0, 0}, {1, 0}, {1, -1}, {0, 2}, {1, 2}}},
+    {{{0, 0}, {1, 0}, {1, -1}, {0, 2}, {1, 2}}},
+    {{{0, 0}, {-1, 0}, {-1, 1}, {0, -2}, {-1, -2}}},
+    {{{0, 0}, {1, 0}, {1, 1}, {0, -2}, {1, -2}}},
+    {{{0, 0}, {-1, 0}, {-1, -1}, {0, 2}, {-1, 2}}},
+    {{{0, 0}, {-1, 0}, {-1, -1}, {0, 2}, {-1, 2}}},
+    {{{0, 0}, {1, 0}, {1, 1}, {0, -2}, {1, -2}}}
+}};
+
+static const std::array<std::pair<int, int>, 5> KICKS_I[8] = {{
+    {{{0, 0}, {-2, 0}, {1, 0}, {-2, -1}, {1, 2}}},
+    {{{0, 0}, {2, 0}, {-1, 0}, {2, 1}, {-1, -2}}},
+    {{{0, 0}, {-1, 0}, {2, 0}, {-1, 2}, {2, -1}}},
+    {{{0, 0}, {1, 0}, {-2, 0}, {1, -2}, {-2, 1}}},
+    {{{0, 0}, {2, 0}, {-1, 0}, {2, 1}, {-1, -2}}},
+    {{{0, 0}, {-2, 0}, {1, 0}, {-2, -1}, {1, 2}}},
+    {{{0, 0}, {1, 0}, {-2, 0}, {1, -2}, {-2, 1}}},
+    {{{0, 0}, {-1, 0}, {2, 0}, {-1, 2}, {2, -1}}}
+}};
+
+int Tetromino::obtenirIndexKick(int fromOrient, int toOrient, bool horaire) const {
+    if (horaire) {
+        if (fromOrient == 0 && toOrient == 1) return 0;
+        if (fromOrient == 1 && toOrient == 0) return 1;
+        if (fromOrient == 1 && toOrient == 2) return 2;
+        if (fromOrient == 2 && toOrient == 1) return 3;
+        if (fromOrient == 2 && toOrient == 3) return 4;
+        if (fromOrient == 3 && toOrient == 2) return 5;
+        if (fromOrient == 3 && toOrient == 0) return 6;
+        if (fromOrient == 0 && toOrient == 3) return 7;
+    } else {
+        if (fromOrient == 0 && toOrient == 3) return 0;
+        if (fromOrient == 3 && toOrient == 0) return 1;
+        if (fromOrient == 3 && toOrient == 2) return 2;
+        if (fromOrient == 2 && toOrient == 3) return 3;
+        if (fromOrient == 2 && toOrient == 1) return 4;
+        if (fromOrient == 1 && toOrient == 2) return 5;
+        if (fromOrient == 1 && toOrient == 0) return 6;
+        if (fromOrient == 0 && toOrient == 1) return 7;
+    }
+    return 0;
+}
+
 bool Tetromino::essayerRotationHoraire(const std::array<std::array<sf::Color, LARGEUR_GRILLE>, HAUTEUR_GRILLE>& grille) {
     int nouvelleOrientation = (orientation + 1) % 4;
+    int kickIndex = obtenirIndexKick(orientation, nouvelleOrientation, true);
 
-    static const std::array<std::pair<int, int>, 5> kicks = {{
-        {0, 0}, {-1, 0}, {1, 0}, {-2, 0}, {2, 0}
-    }};
+    const auto& kicks = (type == TypeTetromino::I) ? KICKS_I[kickIndex] : KICKS_JLSTZ[kickIndex];
 
     for (const auto& kick : kicks) {
         if (verifierPosition(grille, kick.first, kick.second, nouvelleOrientation)) {
@@ -74,11 +118,12 @@ bool Tetromino::essayerRotationHoraire(const std::array<std::array<sf::Color, LA
 }
 
 bool Tetromino::essayerRotationAntiHoraire(const std::array<std::array<sf::Color, LARGEUR_GRILLE>, HAUTEUR_GRILLE>& grille) {
-    int nouvelleOrientation = (orientation + 3) % 4;
+    if (type == TypeTetromino::O) return false;
 
-    static const std::array<std::pair<int, int>, 5> kicks = {{
-        {0, 0}, {-1, 0}, {1, 0}, {-2, 0}, {2, 0}
-    }};
+    int nouvelleOrientation = (orientation + 3) % 4;
+    int kickIndex = obtenirIndexKick(orientation, nouvelleOrientation, false);
+
+    const auto& kicks = (type == TypeTetromino::I) ? KICKS_I[kickIndex] : KICKS_JLSTZ[kickIndex];
 
     for (const auto& kick : kicks) {
         if (verifierPosition(grille, kick.first, kick.second, nouvelleOrientation)) {
