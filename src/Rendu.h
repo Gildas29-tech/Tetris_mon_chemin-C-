@@ -43,6 +43,7 @@ private:
     sf::CircleShape particuleForme;
     bool policeChargee;
     std::vector<Particule> particules;
+    std::vector<sf::RectangleShape> fondGrille;
 
     void dessinerBloc(int x, int y, sf::Color couleur, bool ombre = false);
     sf::Vector2f positionEcran(int x, int y) const;
