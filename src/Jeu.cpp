@@ -71,17 +71,11 @@ void Jeu::traiterEntree() {
                     score.ajouterScore(0);
                 }
             } else if (action == GestionnaireEntrees::Action::ROTATION_HORAIRE) {
-                Tetromino test = tetrominoActuel;
-                test.rotationHoraire();
-                if (grille.estValide(test)) {
-                    tetrominoActuel.rotationHoraire();
+                if (tetrominoActuel.essayerRotationHoraire(grille.obtenirCellules())) {
                     son.jouerRotation();
                 }
             } else if (action == GestionnaireEntrees::Action::ROTATION_ANTI_HORAIRE) {
-                Tetromino test = tetrominoActuel;
-                test.rotationAntiHoraire();
-                if (grille.estValide(test)) {
-                    tetrominoActuel.rotationAntiHoraire();
+                if (tetrominoActuel.essayerRotationAntiHoraire(grille.obtenirCellules())) {
                     son.jouerRotation();
                 }
             } else if (action == GestionnaireEntrees::Action::CHUTE_IMMEDIATE) {
