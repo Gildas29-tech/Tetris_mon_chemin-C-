@@ -4,10 +4,13 @@ Jeu::Jeu()
     : fenetre(sf::VideoMode(DECALAGE_X * 2 + LARGEUR_GRILLE * TAILLE_CASE + 200, DECALAGE_Y * 2 + HAUTEUR_GRILLE * TAILLE_CASE), "Tetris")
     , tetrominoActuel(Tetromino::creerAleatoire())
     , prochainTetromino(Tetromino::creerAleatoire())
+    , holdTetromino()
     , etat(EtatJeu::MENU)
     , tempsAccumule(0)
     , premierePiece(true)
-    , ancienNiveau(1) {
+    , ancienNiveau(1)
+    , holdUtilise(false)
+    , holdVide(true) {
     fenetre.setFramerateLimit(60);
     rendu.initialiser(fenetre);
 }
@@ -87,6 +90,8 @@ void Jeu::traiterEntree() {
                     score.ajouterScore(0);
                 }
                 mettreAJour();
+            } else if (action == GestionnaireEntrees::Action::HOLD) {
+                echangerHold();
             }
             break;
 
@@ -143,6 +148,31 @@ void Jeu::genererNouveauTetromino() {
     tetrominoActuel = prochainTetromino;
     prochainTetromino = Tetromino::creerAleatoire();
     tetrominoActuel.definirPosition(4, 0);
+    holdUtilise = false;
+}
+
+void Jeu::echangerHold() {
+    if (holdUtilise) return;
+
+    if (holdVide) {
+        holdTetromino = tetrominoActuel;
+        holdTetromino.definirPosition(4, 0);
+        holdVide = false;
+        genererNouveauTetromino();
+    } else {
+        TypeTetromino typeActuel = tetrominoActuel.obtenirType();
+        int orientationActuelle = tetrominoActuel.obtenirOrientation();
+        TypeTetromino typeHold = holdTetromino.obtenirType();
+
+        holdTetromino = tetrominoActuel;
+        holdTetromino.definirPosition(4, 0);
+
+        tetrominoActuel = Tetromino(typeHold);
+        tetrominoActuel.definirPosition(4, 0);
+    }
+
+    holdUtilise = true;
+    son.jouerDeplacement();
 }
 
 bool Jeu::verifierGameOver() {
@@ -154,6 +184,9 @@ void Jeu::reinitialiserJeu() {
     score.reinitialiser();
     tetrominoActuel = Tetromino::creerAleatoire();
     prochainTetromino = Tetromino::creerAleatoire();
+    holdTetromino = Tetromino();
+    holdVide = true;
+    holdUtilise = false;
     tetrominoActuel.definirPosition(4, 0);
     tempsAccumule = 0;
     premierePiece = true;
@@ -173,6 +206,9 @@ void Jeu::afficher() {
             rendu.dessinerGrille(grille);
             rendu.dessinerTetromino(tetrominoActuel);
             rendu.dessinerProchainTetromino(prochainTetromino);
+            if (!holdVide) {
+                rendu.dessinerHoldTetromino(holdTetromino);
+            }
             rendu.dessinerScore(score);
             if (etat == EtatJeu::PAUSE) {
                 rendu.dessinerPause();

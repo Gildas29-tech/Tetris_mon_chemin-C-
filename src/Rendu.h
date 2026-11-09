@@ -14,6 +14,7 @@ public:
     void dessinerGrille(const Grille& grille);
     void dessinerTetromino(const Tetromino& tetromino);
     void dessinerProchainTetromino(const Tetromino& prochain);
+    void dessinerHoldTetromino(const Tetromino& hold);
     void dessinerScore(const GestionnaireScore& score);
     void dessinerMenu();
     void dessinerPause();

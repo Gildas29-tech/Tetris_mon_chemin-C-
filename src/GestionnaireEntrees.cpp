@@ -25,6 +25,8 @@ GestionnaireEntrees::Action GestionnaireEntrees::traiterEvenements(sf::RenderWin
     bool p = sf::Keyboard::isKeyPressed(sf::Keyboard::P);
     bool entree = sf::Keyboard::isKeyPressed(sf::Keyboard::Enter);
     bool echap = sf::Keyboard::isKeyPressed(sf::Keyboard::Escape);
+    bool c = sf::Keyboard::isKeyPressed(sf::Keyboard::C);
+    bool shiftGauche = sf::Keyboard::isKeyPressed(sf::Keyboard::LShift);
 
     if (echap) return Action::QUITTER;
     if (entree) return Action::DEMARRER;
@@ -35,6 +37,7 @@ GestionnaireEntrees::Action GestionnaireEntrees::traiterEvenements(sf::RenderWin
     if (haut || x) return Action::ROTATION_HORAIRE;
     if (z) return Action::ROTATION_ANTI_HORAIRE;
     if (espace) return Action::CHUTE_IMMEDIATE;
+    if (c || shiftGauche) return Action::HOLD;
 
     return Action::RIEN;
 }

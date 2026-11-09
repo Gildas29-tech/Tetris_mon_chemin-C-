@@ -19,12 +19,14 @@ private:
     void afficher();
     void reinitialiserJeu();
     void genererNouveauTetromino();
+    void echangerHold();
     bool verifierGameOver();
 
     sf::RenderWindow fenetre;
     Grille grille;
     Tetromino tetrominoActuel;
     Tetromino prochainTetromino;
+    Tetromino holdTetromino;
     GestionnaireScore score;
     GestionnaireEntrees entrees;
     GestionnaireSon son;
@@ -35,4 +37,6 @@ private:
     float tempsAccumule;
     bool premierePiece;
     int ancienNiveau;
+    bool holdUtilise;
+    bool holdVide;
 };

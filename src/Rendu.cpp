@@ -113,6 +113,23 @@ void Rendu::dessinerProchainTetromino(const Tetromino& prochain) {
     }
 }
 
+void Rendu::dessinerHoldTetromino(const Tetromino& hold) {
+    if (!fenetre || !policeChargee) return;
+
+    sf::Text texte("HOLD", police, 20);
+    texte.setPosition(DECALAGE_X + LARGEUR_GRILLE * TAILLE_CASE + 50, DECALAGE_Y + 100);
+    texte.setFillColor(sf::Color::White);
+    fenetre->draw(texte);
+
+    const auto& blocs = hold.obtenirBlocs();
+    for (const auto& bloc : blocs) {
+        sf::Vector2f pos(DECALAGE_X + LARGEUR_GRILLE * TAILLE_CASE + 50 + bloc.x * TAILLE_CASE, DECALAGE_Y + 140 + bloc.y * TAILLE_CASE);
+        caseForme.setPosition(pos);
+        caseForme.setFillColor(hold.obtenirCouleur());
+        fenetre->draw(caseForme);
+    }
+}
+
 void Rendu::dessinerScore(const GestionnaireScore& score) {
     if (!fenetre || !policeChargee) return;
 
