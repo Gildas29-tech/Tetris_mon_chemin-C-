@@ -118,6 +118,19 @@ void Rendu::dessinerProchainTetromino(const Tetromino& prochain) {
     }
 }
 
+void Rendu::dessinerProchainTetrominoIndex(const Tetromino& prochain, int index) {
+    if (!fenetre || !policeChargee) return;
+
+    const auto& blocs = prochain.obtenirBlocs();
+    int decalageY = 40 + index * 70;
+    for (const auto& bloc : blocs) {
+        sf::Vector2f pos(DECALAGE_X + LARGEUR_GRILLE * TAILLE_CASE + 50 + bloc.x * TAILLE_CASE, DECALAGE_Y + decalageY + bloc.y * TAILLE_CASE);
+        caseForme.setPosition(pos);
+        caseForme.setFillColor(prochain.obtenirCouleur());
+        fenetre->draw(caseForme);
+    }
+}
+
 void Rendu::dessinerHoldTetromino(const Tetromino& hold) {
     if (!fenetre || !policeChargee) return;
 

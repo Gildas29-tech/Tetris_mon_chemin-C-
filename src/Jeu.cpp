@@ -1,19 +1,30 @@
 #include "Jeu.h"
 #include <vector>
+#include <algorithm>
 
 Jeu::Jeu()
     : fenetre(sf::VideoMode(DECALAGE_X * 2 + LARGEUR_GRILLE * TAILLE_CASE + 200, DECALAGE_Y * 2 + HAUTEUR_GRILLE * TAILLE_CASE), "Tetris")
     , tetrominoActuel(Tetromino::creerAleatoire())
-    , prochainTetromino(Tetromino::creerAleatoire())
+    , indexSac(0)
     , holdTetromino()
     , etat(EtatJeu::MENU)
     , tempsAccumule(0)
     , premierePiece(true)
     , ancienNiveau(1)
     , holdUtilise(false)
-    , holdVide(true) {
+    , holdVide(true)
+    , rng(std::random_device{}()) {
     fenetre.setFramerateLimit(60);
     rendu.initialiser(fenetre);
+    remplirSac();
+    for (int i = 0; i < 3; ++i) {
+        Tetromino t(sac[indexSac]);
+        t.definirPosition(4, 0);
+        prochainsTetrominos.push_back(t);
+        indexSac = (indexSac + 1) % 7;
+    }
+    tetrominoActuel = prochainsTetrominos.front();
+    prochainsTetrominos.pop_front();
 }
 
 void Jeu::executer() {
@@ -34,6 +45,12 @@ void Jeu::executer() {
 
         afficher();
     }
+}
+
+void Jeu::remplirSac() {
+    sac = {TypeTetromino::I, TypeTetromino::J, TypeTetromino::L, TypeTetromino::O, TypeTetromino::S, TypeTetromino::T, TypeTetromino::Z};
+    std::shuffle(sac.begin(), sac.end(), rng);
+    indexSac = 0;
 }
 
 void Jeu::traiterEntree() {
@@ -164,8 +181,18 @@ void Jeu::mettreAJour() {
 }
 
 void Jeu::genererNouveauTetromino() {
-    tetrominoActuel = prochainTetromino;
-    prochainTetromino = Tetromino::creerAleatoire();
+    if (prochainsTetrominos.size() < 3) {
+        if (indexSac >= 7) {
+            remplirSac();
+        }
+        Tetromino t(sac[indexSac]);
+        t.definirPosition(4, 0);
+        prochainsTetrominos.push_back(t);
+        indexSac = (indexSac + 1) % 7;
+    }
+
+    tetrominoActuel = prochainsTetrominos.front();
+    prochainsTetrominos.pop_front();
     tetrominoActuel.definirPosition(4, 0);
     holdUtilise = false;
 }
@@ -179,8 +206,6 @@ void Jeu::echangerHold() {
         holdVide = false;
         genererNouveauTetromino();
     } else {
-        TypeTetromino typeActuel = tetrominoActuel.obtenirType();
-        int orientationActuelle = tetrominoActuel.obtenirOrientation();
         TypeTetromino typeHold = holdTetromino.obtenirType();
 
         holdTetromino = tetrominoActuel;
@@ -201,15 +226,22 @@ bool Jeu::verifierGameOver() {
 void Jeu::reinitialiserJeu() {
     grille.reinitialiser();
     score.reinitialiser();
-    tetrominoActuel = Tetromino::creerAleatoire();
-    prochainTetromino = Tetromino::creerAleatoire();
+    prochainsTetrominos.clear();
     holdTetromino = Tetromino();
     holdVide = true;
     holdUtilise = false;
-    tetrominoActuel.definirPosition(4, 0);
+    ancienNiveau = 1;
     tempsAccumule = 0;
     premierePiece = true;
-    ancienNiveau = 1;
+    remplirSac();
+    for (int i = 0; i < 3; ++i) {
+        Tetromino t(sac[indexSac]);
+        t.definirPosition(4, 0);
+        prochainsTetrominos.push_back(t);
+        indexSac = (indexSac + 1) % 7;
+    }
+    tetrominoActuel = prochainsTetrominos.front();
+    prochainsTetrominos.pop_front();
 }
 
 void Jeu::afficher() {
@@ -224,7 +256,9 @@ void Jeu::afficher() {
         case EtatJeu::PAUSE:
             rendu.dessinerGrille(grille);
             rendu.dessinerTetromino(tetrominoActuel);
-            rendu.dessinerProchainTetromino(prochainTetromino);
+            for (size_t i = 0; i < prochainsTetrominos.size() && i < 3; ++i) {
+                rendu.dessinerProchainTetrominoIndex(prochainsTetrominos[i], i);
+            }
             if (!holdVide) {
                 rendu.dessinerHoldTetromino(holdTetromino);
             }

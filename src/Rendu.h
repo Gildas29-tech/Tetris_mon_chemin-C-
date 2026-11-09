@@ -23,6 +23,7 @@ public:
     void dessinerGrille(const Grille& grille);
     void dessinerTetromino(const Tetromino& tetromino);
     void dessinerProchainTetromino(const Tetromino& prochain);
+    void dessinerProchainTetrominoIndex(const Tetromino& prochain, int index);
     void dessinerHoldTetromino(const Tetromino& hold);
     void dessinerScore(const GestionnaireScore& score);
     void dessinerMenu();

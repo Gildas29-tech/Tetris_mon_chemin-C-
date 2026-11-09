@@ -7,6 +7,9 @@
 #include "GestionnaireSon.h"
 #include "Rendu.h"
 #include <SFML/System.hpp>
+#include <array>
+#include <deque>
+#include <random>
 
 class Jeu {
 public:
@@ -20,12 +23,15 @@ private:
     void reinitialiserJeu();
     void genererNouveauTetromino();
     void echangerHold();
+    void remplirSac();
     bool verifierGameOver();
 
     sf::RenderWindow fenetre;
     Grille grille;
     Tetromino tetrominoActuel;
-    Tetromino prochainTetromino;
+    std::deque<Tetromino> prochainsTetrominos;
+    std::array<TypeTetromino, 7> sac;
+    int indexSac;
     Tetromino holdTetromino;
     GestionnaireScore score;
     GestionnaireEntrees entrees;
@@ -39,4 +45,5 @@ private:
     int ancienNiveau;
     bool holdUtilise;
     bool holdVide;
+    std::mt19937 rng;
 };
