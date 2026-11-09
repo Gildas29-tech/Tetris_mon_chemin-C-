@@ -1,4 +1,5 @@
 #include "Jeu.h"
+#include <vector>
 
 Jeu::Jeu()
     : fenetre(sf::VideoMode(DECALAGE_X * 2 + LARGEUR_GRILLE * TAILLE_CASE + 200, DECALAGE_Y * 2 + HAUTEUR_GRILLE * TAILLE_CASE), "Tetris")
@@ -28,6 +29,7 @@ void Jeu::executer() {
                 tempsAccumule = 0;
                 mettreAJour();
             }
+            rendu.mettreAJourParticules(deltaTemps);
         }
 
         afficher();
@@ -124,10 +126,27 @@ void Jeu::mettreAJour() {
         grille.verrouiller(tetrominoActuel);
         son.jouerVerrouillage();
 
+        std::vector<std::pair<int, std::array<sf::Color, LARGEUR_GRILLE>>> lignesCompletes;
+        for (int y = 0; y < HAUTEUR_GRILLE; ++y) {
+            bool complete = true;
+            for (int x = 0; x < LARGEUR_GRILLE; ++x) {
+                if (grille.obtenirCellules()[y][x] == sf::Color::Transparent) {
+                    complete = false;
+                    break;
+                }
+            }
+            if (complete) {
+                lignesCompletes.push_back({y, grille.obtenirCellules()[y]});
+            }
+        }
+
         int lignes = grille.supprimerLignesCompletes();
         if (lignes > 0) {
             score.ajouterScore(lignes);
             son.jouerLigne(lignes);
+            for (const auto& ligne : lignesCompletes) {
+                rendu.ajouterParticulesLigne(ligne.first, ligne.second);
+            }
         }
 
         if (score.obtenirNiveau() > ancienNiveau) {
