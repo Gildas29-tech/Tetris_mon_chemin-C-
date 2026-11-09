@@ -21,6 +21,7 @@ add_executable(Tetris
     src/GestionnaireEntrees.cpp
     src/Rendu.cpp
     src/GestionnaireScore.cpp
+    src/GestionnaireSon.cpp
 )
 
 target_link_libraries(Tetris PRIVATE sfml-graphics sfml-window sfml-system sfml-audio)

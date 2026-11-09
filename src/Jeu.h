@@ -4,6 +4,7 @@
 #include "Tetromino.h"
 #include "GestionnaireScore.h"
 #include "GestionnaireEntrees.h"
+#include "GestionnaireSon.h"
 #include "Rendu.h"
 #include <SFML/System.hpp>
 
@@ -26,10 +27,12 @@ private:
     Tetromino prochainTetromino;
     GestionnaireScore score;
     GestionnaireEntrees entrees;
+    GestionnaireSon son;
     Rendu rendu;
 
     EtatJeu etat;
     sf::Clock horloge;
     float tempsAccumule;
     bool premierePiece;
+    int ancienNiveau;
 };

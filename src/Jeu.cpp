@@ -6,7 +6,8 @@ Jeu::Jeu()
     , prochainTetromino(Tetromino::creerAleatoire())
     , etat(EtatJeu::MENU)
     , tempsAccumule(0)
-    , premierePiece(true) {
+    , premierePiece(true)
+    , ancienNiveau(1) {
     fenetre.setFramerateLimit(60);
     rendu.initialiser(fenetre);
 }
@@ -51,11 +52,17 @@ void Jeu::traiterEntree() {
             } else if (action == GestionnaireEntrees::Action::GAUCHE) {
                 Tetromino test = tetrominoActuel;
                 test.deplacer(-1, 0);
-                if (grille.estValide(test)) tetrominoActuel.deplacer(-1, 0);
+                if (grille.estValide(test)) {
+                    tetrominoActuel.deplacer(-1, 0);
+                    son.jouerDeplacement();
+                }
             } else if (action == GestionnaireEntrees::Action::DROITE) {
                 Tetromino test = tetrominoActuel;
                 test.deplacer(1, 0);
-                if (grille.estValide(test)) tetrominoActuel.deplacer(1, 0);
+                if (grille.estValide(test)) {
+                    tetrominoActuel.deplacer(1, 0);
+                    son.jouerDeplacement();
+                }
             } else if (action == GestionnaireEntrees::Action::BAS) {
                 Tetromino test = tetrominoActuel;
                 test.deplacer(0, 1);
@@ -66,11 +73,17 @@ void Jeu::traiterEntree() {
             } else if (action == GestionnaireEntrees::Action::ROTATION_HORAIRE) {
                 Tetromino test = tetrominoActuel;
                 test.rotationHoraire();
-                if (grille.estValide(test)) tetrominoActuel.rotationHoraire();
+                if (grille.estValide(test)) {
+                    tetrominoActuel.rotationHoraire();
+                    son.jouerRotation();
+                }
             } else if (action == GestionnaireEntrees::Action::ROTATION_ANTI_HORAIRE) {
                 Tetromino test = tetrominoActuel;
                 test.rotationAntiHoraire();
-                if (grille.estValide(test)) tetrominoActuel.rotationAntiHoraire();
+                if (grille.estValide(test)) {
+                    tetrominoActuel.rotationAntiHoraire();
+                    son.jouerRotation();
+                }
             } else if (action == GestionnaireEntrees::Action::CHUTE_IMMEDIATE) {
                 while (true) {
                     Tetromino test = tetrominoActuel;
@@ -110,13 +123,22 @@ void Jeu::mettreAJour() {
         tetrominoActuel.deplacer(0, 1);
     } else {
         grille.verrouiller(tetrominoActuel);
+        son.jouerVerrouillage();
+
         int lignes = grille.supprimerLignesCompletes();
         if (lignes > 0) {
             score.ajouterScore(lignes);
+            son.jouerLigne(lignes);
+        }
+
+        if (score.obtenirNiveau() > ancienNiveau) {
+            son.jouerNiveau();
+            ancienNiveau = score.obtenirNiveau();
         }
 
         if (verifierGameOver()) {
             etat = EtatJeu::GAME_OVER;
+            son.jouerGameOver();
         } else {
             genererNouveauTetromino();
         }
@@ -141,6 +163,7 @@ void Jeu::reinitialiserJeu() {
     tetrominoActuel.definirPosition(4, 0);
     tempsAccumule = 0;
     premierePiece = true;
+    ancienNiveau = 1;
 }
 
 void Jeu::afficher() {
