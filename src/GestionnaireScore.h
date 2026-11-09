@@ -15,6 +15,13 @@ public:
     float obtenirVitesse() const;
     void reinitialiser();
     void sauvegarder();
+    void nouvellePartie();
+    void finPartie();
+
+    int obtenirPartiesJouees() const;
+    int obtenirLignesTotalGlobal() const;
+    int obtenirMeilleurNiveau() const;
+    int obtenirMeilleurScorePartie() const;
 
 private:
     int score;
@@ -24,6 +31,14 @@ private:
     float vitesse;
     std::string fichierScore;
 
+    int partiesJouees;
+    int lignesTotalGlobal;
+    int meilleurNiveau;
+    int meilleurScorePartie;
+    std::string fichierStats;
+
     void chargerMeilleurScore();
+    void chargerStats();
+    void sauvegarderStats();
     void mettreAJourNiveau();
 };

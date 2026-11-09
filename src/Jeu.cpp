@@ -174,6 +174,7 @@ void Jeu::mettreAJour() {
         if (verifierGameOver()) {
             etat = EtatJeu::GAME_OVER;
             son.jouerGameOver();
+            score.finPartie();
         } else {
             genererNouveauTetromino();
         }
@@ -226,6 +227,7 @@ bool Jeu::verifierGameOver() {
 void Jeu::reinitialiserJeu() {
     grille.reinitialiser();
     score.reinitialiser();
+    score.nouvellePartie();
     prochainsTetrominos.clear();
     holdTetromino = Tetromino();
     holdVide = true;
@@ -249,7 +251,7 @@ void Jeu::afficher() {
 
     switch (etat) {
         case EtatJeu::MENU:
-            rendu.dessinerMenu();
+            rendu.dessinerMenu(score);
             break;
 
         case EtatJeu::JEU:

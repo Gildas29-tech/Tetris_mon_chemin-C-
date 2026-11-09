@@ -247,7 +247,7 @@ void Rendu::dessinerScore(const GestionnaireScore& score) {
     }
 }
 
-void Rendu::dessinerMenu() {
+void Rendu::dessinerMenu(const GestionnaireScore& score) {
     if (!fenetre || !policeChargee) return;
 
     for (const auto& rect : fondGrille) {
@@ -320,6 +320,47 @@ void Rendu::dessinerMenu() {
         action.setOutlineThickness(1);
         fenetre->draw(action);
     }
+
+    sf::RectangleShape statsCadre(sf::Vector2f(280, 280));
+    statsCadre.setPosition(DECALAGE_X + LARGEUR_GRILLE * TAILLE_CASE + 30, DECALAGE_Y + 140);
+    statsCadre.setFillColor(sf::Color(20, 20, 30, 200));
+    statsCadre.setOutlineColor(sf::Color(100, 100, 120));
+    statsCadre.setOutlineThickness(2);
+    fenetre->draw(statsCadre);
+
+    sf::Text statsTitre("STATISTIQUES", police, 18);
+    statsTitre.setPosition(DECALAGE_X + LARGEUR_GRILLE * TAILLE_CASE + 50, DECALAGE_Y + 150);
+    statsTitre.setFillColor(sf::Color::Cyan);
+    statsTitre.setOutlineColor(sf::Color::Black);
+    statsTitre.setOutlineThickness(1);
+    statsTitre.setStyle(sf::Text::Bold);
+    fenetre->draw(statsTitre);
+
+    auto dessinerStat = [&](const std::string& label, const std::string& valeur, int y) {
+        sf::Text texteLabel(label, police, 16);
+        texteLabel.setPosition(DECALAGE_X + LARGEUR_GRILLE * TAILLE_CASE + 50, y);
+        texteLabel.setFillColor(sf::Color(180, 180, 180));
+        texteLabel.setOutlineColor(sf::Color::Black);
+        texteLabel.setOutlineThickness(1);
+        fenetre->draw(texteLabel);
+
+        sf::Text texteValeur(valeur, police, 18);
+        texteValeur.setPosition(DECALAGE_X + LARGEUR_GRILLE * TAILLE_CASE + 50, y + 22);
+        texteValeur.setFillColor(sf::Color::White);
+        texteValeur.setOutlineColor(sf::Color::Black);
+        texteValeur.setOutlineThickness(1);
+        texteValeur.setStyle(sf::Text::Bold);
+        fenetre->draw(texteValeur);
+    };
+
+    int y = DECALAGE_Y + 190;
+    dessinerStat("PARTIES JOUEES", std::to_string(score.obtenirPartiesJouees()), y);
+    y += 55;
+    dessinerStat("TOTAL LIGNES", std::to_string(score.obtenirLignesTotalGlobal()), y);
+    y += 55;
+    dessinerStat("MEILLEUR NIVEAU", std::to_string(score.obtenirMeilleurNiveau()), y);
+    y += 55;
+    dessinerStat("MEILLEUR SCORE PARTIE", std::to_string(score.obtenirMeilleurScorePartie()), y);
 }
 
 void Rendu::dessinerPause() {

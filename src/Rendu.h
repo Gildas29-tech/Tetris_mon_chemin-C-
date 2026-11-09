@@ -26,7 +26,7 @@ public:
     void dessinerProchainTetrominoIndex(const Tetromino& prochain, int index);
     void dessinerHoldTetromino(const Tetromino& hold);
     void dessinerScore(const GestionnaireScore& score);
-    void dessinerMenu();
+    void dessinerMenu(const GestionnaireScore& score);
     void dessinerPause();
     void dessinerGameOver(int score, int meilleurScore);
     void effacer();
