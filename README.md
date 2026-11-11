@@ -6,14 +6,23 @@ Jeu Tetris 2D développé en C++17 avec la bibliothèque SFML.
 
 - Compilateur C++17 (GCC, Clang, MSVC)
 - CMake 3.16+
-- SFML 2.6 ou 3.x (graphics, window, system, audio)
+- SFML 2.6.x (graphics, window, system, audio; SFML 3.x n'est pas compatible avec les API utilisées)
 
 ## Installation de SFML
 
 ### Windows (avec vcpkg)
-```bash
-vcpkg install sfml:x64-windows
+
+Installez **Visual Studio Build Tools** avec la charge de travail **Développement Desktop en C++** (MSVC et SDK Windows). L'IDE Visual Studio complet n'est pas nécessaire. Dans VS Code, installez aussi les extensions **C/C++** et **CMake Tools**.
+
+Dans PowerShell, placez-vous dans le dossier du projet (celui qui contient `vcpkg.json`), puis installez SFML :
+
+```powershell
+$env:VCPKG_ROOT = "$env:USERPROFILE\vcpkg"
+Set-Location 'C:\Users\royal\Desktop\Nouveau dossier (2)\Tetris_mon_chemin-C-'
+& "$env:VCPKG_ROOT\vcpkg.exe" install --triplet x64-windows
 ```
+
+Dans VS Code, exécutez **CMake: Select a Kit**, choisissez le kit MSVC x64, puis **CMake: Delete Cache and Reconfigure** et **CMake: Build**.
 
 ### Linux (Ubuntu/Debian)
 ```bash
@@ -37,10 +46,10 @@ cmake --build .
 ## Lancement
 
 ```bash
-# Depuis le dossier build
-./Tetris
+# Depuis la racine du projet
+./build/Tetris
 # ou sur Windows
-Tetris.exe
+.\build\Tetris.exe
 ```
 
 ## Commandes

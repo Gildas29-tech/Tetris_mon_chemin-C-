@@ -1,4 +1,5 @@
 #include "GestionnaireSon.h"
+#include <algorithm>
 #include <cmath>
 #include <vector>
 

@@ -2,6 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <array>
+#include <utility>
 #include <vector>
 
 constexpr int LARGEUR_GRILLE = 10;
@@ -12,7 +13,7 @@ constexpr int DECALAGE_Y = 50;
 
 enum class TypeTetromino { I, J, L, O, S, T, Z, COUNT };
 
-constexpr std::array<sf::Color, 7> COULEURS_TETROMINOS = {
+const std::array<sf::Color, 7> COULEURS_TETROMINOS = {
     sf::Color::Cyan,
     sf::Color::Blue,
     sf::Color(255, 165, 0),

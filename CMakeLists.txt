@@ -7,14 +7,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
-    find_package(SFML 2.6 COMPONENTS graphics window system audio REQUIRED
-        PATHS "C:/SFML" "C:/vcpkg/installed/x64-windows"
-        NO_DEFAULT_PATH
-    )
-else()
-    find_package(SFML 2.6 COMPONENTS graphics window system audio REQUIRED)
-endif()
+find_package(SFML 2.6 COMPONENTS graphics window system audio REQUIRED)
 
 add_executable(Tetris
     src/main.cpp
@@ -32,6 +25,8 @@ target_link_libraries(Tetris PRIVATE sfml-graphics sfml-window sfml-system sfml-
 target_include_directories(Tetris PRIVATE src)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/assets")
+configure_file(assets/arial.ttf assets/arial.ttf COPYONLY)
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     target_compile_options(Tetris PRIVATE -Wall -Wextra -Wpedantic)

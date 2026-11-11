@@ -1,5 +1,6 @@
 #pragma once
-#include <SFML/Window.hpp>
+#include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Window/Keyboard.hpp>
 
 class GestionnaireEntrees {
 public:

@@ -1,6 +1,8 @@
 #include "Rendu.h"
+#include <algorithm>
 #include <random>
 #include <cmath>
+#include <string>
 
 Rendu::Rendu() : fenetre(nullptr), policeChargee(false) {
     caseForme.setSize(sf::Vector2f(TAILLE_CASE - 2, TAILLE_CASE - 2));
@@ -395,67 +397,69 @@ void Rendu::dessinerGameOver(int scoreFinal, int meilleurScore) {
     overlay.setFillColor(sf::Color(0, 0, 0, 220));
     fenetre->draw(overlay);
 
-    sf::RectangleShape cadre(sf::Vector2f(350, 300));
-    cadre.setPosition(DECALAGE_X + LARGEUR_GRILLE * TAILLE_CASE / 2 - 175, DECALAGE_Y + HAUTEUR_GRILLE * TAILLE_CASE / 2 - 150);
+    const float centreX = DECALAGE_X + LARGEUR_GRILLE * TAILLE_CASE / 2.0f;
+    const float centreY = DECALAGE_Y + HAUTEUR_GRILLE * TAILLE_CASE / 2.0f;
+    sf::RectangleShape cadre(sf::Vector2f(LARGEUR_GRILLE * TAILLE_CASE - 20.0f, 280.0f));
+    cadre.setPosition(DECALAGE_X + 10.0f, centreY - 140.0f);
     cadre.setFillColor(sf::Color(30, 20, 20, 240));
     cadre.setOutlineColor(sf::Color::Red);
     cadre.setOutlineThickness(3);
     fenetre->draw(cadre);
 
-    sf::Text texte("GAME OVER", police, 55);
-    texte.setPosition(DECALAGE_X + LARGEUR_GRILLE * TAILLE_CASE / 2 - 120, DECALAGE_Y + HAUTEUR_GRILLE * TAILLE_CASE / 2 - 130);
+    auto dessinerTexteCentre = [&](sf::Text& texte, float y) {
+        const sf::FloatRect limites = texte.getLocalBounds();
+        texte.setOrigin(limites.left + limites.width / 2.0f, limites.top + limites.height / 2.0f);
+        texte.setPosition(centreX, y);
+        fenetre->draw(texte);
+    };
+
+    sf::Text texte("GAME OVER", police, 38);
     texte.setFillColor(sf::Color::Red);
     texte.setOutlineColor(sf::Color::Black);
     texte.setOutlineThickness(2);
     texte.setStyle(sf::Text::Bold);
-    fenetre->draw(texte);
+    dessinerTexteCentre(texte, centreY - 105.0f);
 
-    sf::Text texteScore("SCORE FINAL", police, 20);
-    texteScore.setPosition(DECALAGE_X + LARGEUR_GRILLE * TAILLE_CASE / 2 - 80, DECALAGE_Y + HAUTEUR_GRILLE * TAILLE_CASE / 2 - 50);
+    sf::Text texteScore("SCORE FINAL", police, 18);
     texteScore.setFillColor(sf::Color(200, 200, 200));
     texteScore.setOutlineColor(sf::Color::Black);
     texteScore.setOutlineThickness(1);
-    fenetre->draw(texteScore);
+    dessinerTexteCentre(texteScore, centreY - 55.0f);
 
-    sf::Text valeurScore(std::to_string(scoreFinal), police, 40);
-    valeurScore.setPosition(DECALAGE_X + LARGEUR_GRILLE * TAILLE_CASE / 2 - 60, DECALAGE_Y + HAUTEUR_GRILLE * TAILLE_CASE / 2 - 20);
+    sf::Text valeurScore(std::to_string(scoreFinal), police, 32);
     valeurScore.setFillColor(sf::Color::White);
     valeurScore.setOutlineColor(sf::Color::Black);
     valeurScore.setOutlineThickness(1);
     valeurScore.setStyle(sf::Text::Bold);
-    fenetre->draw(valeurScore);
+    dessinerTexteCentre(valeurScore, centreY - 20.0f);
 
-    sf::Text texteMeilleur("MEILLEUR SCORE", police, 18);
-    texteMeilleur.setPosition(DECALAGE_X + LARGEUR_GRILLE * TAILLE_CASE / 2 - 75, DECALAGE_Y + HAUTEUR_GRILLE * TAILLE_CASE / 2 + 30);
+    sf::Text texteMeilleur("MEILLEUR SCORE", police, 16);
     texteMeilleur.setFillColor(sf::Color(200, 200, 100));
     texteMeilleur.setOutlineColor(sf::Color::Black);
     texteMeilleur.setOutlineThickness(1);
-    fenetre->draw(texteMeilleur);
+    dessinerTexteCentre(texteMeilleur, centreY + 25.0f);
 
-    sf::Text valeurMeilleur(std::to_string(meilleurScore), police, 28);
-    valeurMeilleur.setPosition(DECALAGE_X + LARGEUR_GRILLE * TAILLE_CASE / 2 - 50, DECALAGE_Y + HAUTEUR_GRILLE * TAILLE_CASE / 2 + 55);
+    sf::Text valeurMeilleur(std::to_string(meilleurScore), police, 24);
     valeurMeilleur.setFillColor(sf::Color::Yellow);
     valeurMeilleur.setOutlineColor(sf::Color::Black);
     valeurMeilleur.setOutlineThickness(1);
     valeurMeilleur.setStyle(sf::Text::Bold);
-    fenetre->draw(valeurMeilleur);
+    dessinerTexteCentre(valeurMeilleur, centreY + 55.0f);
 
     if (scoreFinal >= meilleurScore && scoreFinal > 0) {
         sf::Text texteNouveau("NOUVEAU RECORD !", police, 22);
-        texteNouveau.setPosition(DECALAGE_X + LARGEUR_GRILLE * TAILLE_CASE / 2 - 90, DECALAGE_Y + HAUTEUR_GRILLE * TAILLE_CASE / 2 + 95);
         texteNouveau.setFillColor(sf::Color::Cyan);
         texteNouveau.setOutlineColor(sf::Color::Black);
         texteNouveau.setOutlineThickness(2);
         texteNouveau.setStyle(sf::Text::Bold);
-        fenetre->draw(texteNouveau);
+        dessinerTexteCentre(texteNouveau, centreY + 88.0f);
     }
 
-    sf::Text instruction("ENTREE: REJOUER  ECHAP: QUITTER", police, 18);
-    instruction.setPosition(DECALAGE_X + 40, DECALAGE_Y + HAUTEUR_GRILLE * TAILLE_CASE / 2 + 140);
+    sf::Text instruction("ENTREE: REJOUER  ECHAP: QUITTER", police, 14);
     instruction.setFillColor(sf::Color::White);
     instruction.setOutlineColor(sf::Color::Black);
     instruction.setOutlineThickness(1);
-    fenetre->draw(instruction);
+    dessinerTexteCentre(instruction, centreY + 115.0f);
 }
 
 void Rendu::ajouterParticulesLigne(int y, const std::array<sf::Color, LARGEUR_GRILLE>& ligne) {

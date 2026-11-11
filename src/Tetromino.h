@@ -25,6 +25,7 @@ public:
 
 private:
     void mettreAJourBlocs();
+    int obtenirIndexKick(int fromOrient, int toOrient, bool horaire) const;
     bool verifierPosition(const std::array<std::array<sf::Color, LARGEUR_GRILLE>, HAUTEUR_GRILLE>& grille, int dx, int dy, int nouvelleOrientation) const;
 
     TypeTetromino type;

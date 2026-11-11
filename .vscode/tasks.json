@@ -8,6 +8,8 @@
             "args": [
                 "-B", "build",
                 "-S", ".",
+                "-DCMAKE_TOOLCHAIN_FILE=${env:VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+                "-DVCPKG_TARGET_TRIPLET=x64-windows",
                 "-DCMAKE_BUILD_TYPE=Release"
             ],
             "group": "build",
@@ -56,6 +58,7 @@
                 "--target", "clean"
             ],
             "group": "build",
+            "dependsOn": "CMake: Configure",
             "presentation": {
                 "reveal": "always"
             }
@@ -63,8 +66,14 @@
         {
             "label": "CMake: Rebuild",
             "type": "shell",
-            "command": "rm -rf build && cmake -B build -S . -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release",
+            "command": "cmake",
+            "args": [
+                "--build", "build",
+                "--config", "Release"
+            ],
             "group": "build",
+            "dependsOn": "CMake: Clean",
+            "dependsOrder": "sequence",
             "presentation": {
                 "reveal": "always"
             }

@@ -1,6 +1,7 @@
 #include "Jeu.h"
 #include <vector>
 #include <algorithm>
+#include <iostream>
 
 Jeu::Jeu()
     : fenetre(sf::VideoMode(DECALAGE_X * 2 + LARGEUR_GRILLE * TAILLE_CASE + 200, DECALAGE_Y * 2 + HAUTEUR_GRILLE * TAILLE_CASE), "Tetris")
@@ -171,12 +172,27 @@ void Jeu::mettreAJour() {
             ancienNiveau = score.obtenirNiveau();
         }
 
+        genererNouveauTetromino();
+
+        // === DEBUG ===
+        auto blocs = tetrominoActuel.obtenirBlocs();
+        std::cout << "\n=== NEW PIECE ===\n";
+        for (auto& b : blocs) {
+            std::cout << "  (" << b.x << "," << b.y << ")";
+            if (b.y >= 0 && b.y < HAUTEUR_GRILLE && b.x >= 0 && b.x < LARGEUR_GRILLE) {
+                auto c = grille.obtenirCellules()[b.y][b.x];
+                std::cout << " Grid[" << b.y << "][" << b.x << "] = "
+                          << (c == sf::Color::Transparent ? "VIDE" : "PLEIN !");
+            }
+            std::cout << "\n";
+        }
+        std::cout << "estValide: " << (grille.estValide(tetrominoActuel) ? "OK" : "INVALID") << "\n";
+        // === FIN DEBUG ===
+
         if (verifierGameOver()) {
             etat = EtatJeu::GAME_OVER;
             son.jouerGameOver();
             score.finPartie();
-        } else {
-            genererNouveauTetromino();
         }
     }
 }
